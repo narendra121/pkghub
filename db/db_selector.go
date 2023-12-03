@@ -1,7 +1,7 @@
 package db
 
 import (
-	postgresdb "pkg-hub/db/postgres-db"
+	postgresdb "github.com/narendra121/pkghub/db/postgres-db"
 )
 
 type DbFactory interface {

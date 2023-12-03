@@ -1,8 +1,9 @@
 package auth
 
 import (
-	"pkg-hub/utils"
 	"strings"
+
+	"github.com/narendra121/pkghub/utils"
 
 	"github.com/golang-jwt/jwt"
 )

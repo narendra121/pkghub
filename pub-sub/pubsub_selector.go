@@ -1,7 +1,7 @@
 package pubsub
 
 import (
-	"pkg-hub/pub-sub/kafka"
+	"github.com/narendra121/pkghub/pub-sub/kafka"
 )
 
 type PubSubFactory interface {

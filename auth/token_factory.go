@@ -2,8 +2,9 @@ package auth
 
 import (
 	"fmt"
-	"pkg-hub/utils"
 	"time"
+
+	"github.com/narendra121/pkghub/utils"
 
 	"github.com/golang-jwt/jwt"
 	log "github.com/sirupsen/logrus"

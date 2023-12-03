@@ -1,4 +1,4 @@
-module pkg-hub
+module github.com/narendra121/pkghub
 
 go 1.21.0
 
