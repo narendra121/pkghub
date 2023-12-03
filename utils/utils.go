@@ -30,3 +30,7 @@ func GetTokenData(token *jwt.Token) jwt.MapClaims {
 	}
 	return claims
 }
+
+func GetExpDuration(exp int64) int64 {
+	return time.Now().Add(time.Minute * time.Duration(exp)).Unix()
+}
