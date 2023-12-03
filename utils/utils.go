@@ -4,9 +4,8 @@ import (
 	"crypto/rand"
 	"time"
 
-	log "github.com/sirupsen/logrus"
-
 	"github.com/golang-jwt/jwt"
+	log "github.com/sirupsen/logrus"
 )
 
 func GenerateRandomSalt(length int) ([]byte, error) {

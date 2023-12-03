@@ -28,6 +28,10 @@ func NewTokenFactory(tokenType interface{}) TokenFactory {
 }
 
 func (j *JwtClaims) GenerateSignedToken(expiry int64, customValidtor CustomTokenValidationFunc) string {
+	if !j.IsCustomValidatorSuccess(customValidtor) {
+		return ""
+	}
+
 	var signInSalt string
 
 	j.JwtClaim[utils.JWT_CLAIMS_TOKEN_EXP_KEY] = utils.GetExpDuration(expiry)
@@ -51,29 +55,16 @@ func (j *JwtClaims) GenerateSignedToken(expiry int64, customValidtor CustomToken
 func (j *JwtClaims) IsTokenValid(signedToken string, customValidtor CustomTokenValidationFunc) bool {
 
 	token, isValid := j.validateSignInMethod(signedToken)
-	if !isValid {
+	if !isValid || !token.Valid {
 		return false
 	}
 
-	tokenData := utils.GetTokenData(token)
-	if tokenData == nil {
-		log.Errorln("error in parsing token data: ")
-		return false
-	}
-
-	if !utils.ValidateExpiration(int64(tokenData[utils.JWT_CLAIMS_TOKEN_EXP_KEY].(float64))) {
+	if !utils.ValidateExpiration(int64(j.JwtClaim[utils.JWT_CLAIMS_TOKEN_EXP_KEY].(float64))) {
 		log.Errorln("token got expired")
 		return false
 	}
-
-	if customValidtor != nil {
-		userName, ok := tokenData[utils.JWT_CLAIMS_USERNAME_KEY]
-		if !ok {
-			return false
-		}
-		if !customValidtor(userName.(string)) {
-			return false
-		}
+	if !j.IsCustomValidatorSuccess(customValidtor) {
+		return false
 	}
 
 	return true
@@ -105,4 +96,18 @@ func (j *JwtClaims) validateSignInMethod(signedToken string) (*jwt.Token, bool) 
 		return nil, false
 	}
 	return token, true
+}
+
+func (j *JwtClaims) IsCustomValidatorSuccess(validator CustomTokenValidationFunc) bool {
+	if validator != nil {
+		userName, ok := j.JwtClaim[utils.JWT_CLAIMS_USERNAME_KEY]
+		if !ok {
+			return false
+		}
+		if !validator(userName.(string)) {
+			return false
+		}
+	}
+	return true
+
 }

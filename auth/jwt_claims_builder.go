@@ -1,11 +1,8 @@
 package auth
 
 import (
-	"strings"
-
-	"github.com/narendra121/pkghub/utils"
-
 	"github.com/golang-jwt/jwt"
+	"github.com/narendra121/pkghub/utils"
 )
 
 type JwtClaims struct {
@@ -37,17 +34,4 @@ func (jcb *JwtClaimsBuilder) AddCustomClaim(key, val string) *JwtClaimsBuilder {
 
 func (jcb *JwtClaimsBuilder) Build() JwtClaims {
 	return jcb.jwtClaims
-}
-
-func (jcb *JwtClaimsBuilder) validate(val interface{}) bool {
-
-	switch val.(type) {
-	case string:
-		return strings.EqualFold(val.(string), "")
-	case int:
-		return val.(int) == 0
-	default:
-		return false
-	}
-
 }
