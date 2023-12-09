@@ -76,10 +76,12 @@ func main() {
 	// dbf.CreateTable(&UserJam{})
 	jb := auth.NewJwtBuilder().AddUserName("1234567").Build()
 	tk := auth.NewTokenFactory(&jb)
-	t := tk.GenerateSignedToken(2, "sss", nil)
-	fmt.Println(t)
-	v := tk.IsTokenValid(t, "sss", nil)
+	// t := tk.GenerateSignedToken(2, "sss", nil)
+	// fmt.Println(t)
+	v := tk.IsTokenValid("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl9leHAiOjE3MDIxMTY5ODAsInVzZXJfbmFtZSI6IjEyMzQ1NjcifQ.uitDNgeoq26jIeTwCBKlfVCw2bgNCyPRdexWfNyT7-c", "sss", nil)
 	fmt.Println(v)
+	// r := tk.RefreshToken("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl9leHAiOjE3MDIxMTY5MDQsInVzZXJfbmFtZSI6IjEyMzQ1NjcifQ.jzwUOkpIDOJQDhCUq-FQgLTQ4cYG1h98Uru_xWP1OHs", "sss", 2, nil)
+	// fmt.Println(r)
 }
 
 // type UserJam struct {

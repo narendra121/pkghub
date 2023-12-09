@@ -2,7 +2,6 @@ package auth
 
 import (
 	"fmt"
-	"time"
 
 	"github.com/narendra121/pkghub/utils"
 
@@ -19,7 +18,6 @@ type TokenFactory interface {
 }
 
 func NewTokenFactory(tokenType interface{}) TokenFactory {
-	fmt.Printf("%T", tokenType)
 	switch tokenType.(type) {
 	case *JwtClaims:
 		return tokenType.(*JwtClaims)
@@ -52,7 +50,9 @@ func (j *JwtClaims) IsTokenValid(signedToken, signInSalt string, customValidtor 
 	if !isValid || !token.Valid {
 		return false
 	}
-	exp := j.JwtClaim[utils.JWT_CLAIMS_TOKEN_EXP_KEY].(int64)
+	j.JwtClaim = utils.GetTokenData(token)
+
+	exp := j.JwtClaim[utils.JWT_CLAIMS_TOKEN_EXP_KEY].(float64)
 
 	if !utils.ValidateExpiration(int64(exp)) {
 		log.Errorln("token got expired")
@@ -69,9 +69,6 @@ func (j *JwtClaims) RefreshToken(signedToken string, signInSalt string, tokenExp
 	if !j.IsTokenValid(signedToken, signInSalt, customValidtor) {
 		return ""
 	}
-	tokenExp = time.Now().Add(time.Minute * time.Duration(tokenExp)).Unix()
-	j.JwtClaim[utils.JWT_CLAIMS_TOKEN_EXP_KEY] = tokenExp
-
 	return j.GenerateSignedToken(tokenExp, signInSalt, nil)
 }
 
