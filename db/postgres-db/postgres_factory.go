@@ -2,7 +2,6 @@ package postgresdb
 
 import (
 	"fmt"
-	"sync"
 
 	log "github.com/sirupsen/logrus"
 	"gorm.io/driver/postgres"
@@ -21,7 +20,6 @@ ppstb := postgresdb.NewPostgresDbBuilder().
 	_ = dbf.Connect()
 	dbf.CreateTable(&UserPro{}, &RamUsersMegaASD{})
 */
-var once sync.Once
 
 func (p *PostgresDB) Connect() (interface{}, error) {
 

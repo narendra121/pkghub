@@ -1,9 +1,5 @@
 package pubsub
 
-import (
-	"github.com/narendra121/pkghub/pub-sub/kafka"
-)
-
 type PubSubFactory interface {
 	CreateNewTopic() error
 
@@ -12,14 +8,4 @@ type PubSubFactory interface {
 
 	CreateConsumerGroup() (interface{}, error)
 	AddConsumerToConsumerGroup(consumer interface{}, customMsgHandler interface{})
-}
-
-func NewPubSubFactory(pubSubStreamer interface{}) PubSubFactory {
-
-	switch pubSubStreamer.(type) {
-	case *kafka.KafkaBuilder:
-		return pubSubStreamer.(*kafka.KafkaBuilder)
-	default:
-		return nil
-	}
 }

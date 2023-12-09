@@ -1,9 +1,10 @@
 package main
 
 import (
+	"context"
 	"fmt"
 
-	"github.com/narendra121/pkghub/auth"
+	redispkg "github.com/narendra121/pkghub/redis-pkg"
 )
 
 func main() {
@@ -74,14 +75,21 @@ func main() {
 	// r.Migrator().CreateTable(&UserJam{})
 	// _ = dbf.Connect()
 	// dbf.CreateTable(&UserJam{})
-	jb := auth.NewJwtBuilder().AddUserName("1234567").Build()
-	tk := auth.NewTokenFactory(&jb)
+	// jb := auth.NewJwtBuilder().AddUserName("1234567").Build()
+	// tk := auth.NewTokenFactory(&jb)
 	// t := tk.GenerateSignedToken(2, "sss", nil)
 	// fmt.Println(t)
-	v := tk.IsTokenValid("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl9leHAiOjE3MDIxMTY5ODAsInVzZXJfbmFtZSI6IjEyMzQ1NjcifQ.uitDNgeoq26jIeTwCBKlfVCw2bgNCyPRdexWfNyT7-c", "sss", nil)
-	fmt.Println(v)
+	// v := tk.IsTokenValid("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl9leHAiOjE3MDIxMTY5ODAsInVzZXJfbmFtZSI6IjEyMzQ1NjcifQ.uitDNgeoq26jIeTwCBKlfVCw2bgNCyPRdexWfNyT7-c", "sss", nil)
+	// fmt.Println(v)
 	// r := tk.RefreshToken("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl9leHAiOjE3MDIxMTY5MDQsInVzZXJfbmFtZSI6IjEyMzQ1NjcifQ.jzwUOkpIDOJQDhCUq-FQgLTQ4cYG1h98Uru_xWP1OHs", "sss", 2, nil)
 	// fmt.Println(r)
+	rb := redispkg.NewRedisBuilder().SetHost("localhost:6379").SetPassword("123456").SetProtocol(3).Build()
+	rp := redispkg.NewClent(&rb)
+	// err := rp.SetValue(context.Background(), "hello", "ram", "ram")
+	re, _ := rp.GetAll(context.Background(), "hello")
+	rp.FlushRedis(context.Background())
+	rm, _ := rp.GetValue(context.Background(), "hello", "ram")
+	fmt.Println(re, rm)
 }
 
 // type UserJam struct {

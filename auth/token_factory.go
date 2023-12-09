@@ -17,15 +17,6 @@ type TokenFactory interface {
 	RefreshToken(signedToken string, signInSalt string, tokenExp int64, customValidtor CustomTokenValidationFunc) string
 }
 
-func NewTokenFactory(tokenType interface{}) TokenFactory {
-	switch tokenType.(type) {
-	case *JwtClaims:
-		return tokenType.(*JwtClaims)
-	default:
-		return nil
-	}
-}
-
 func (j *JwtClaims) GenerateSignedToken(expiry int64, signInSalt string, customValidtor CustomTokenValidationFunc) string {
 	if !j.IsCustomValidatorSuccess(customValidtor) {
 		return ""
