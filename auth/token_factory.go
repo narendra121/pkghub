@@ -13,35 +13,29 @@ import (
 type CustomTokenValidationFunc func(username string) bool
 
 type TokenFactory interface {
-	GenerateSignedToken(expiry int64, customValidtor CustomTokenValidationFunc) string
-	IsTokenValid(signedToken string, customValidtor CustomTokenValidationFunc) bool
-	RefreshToken(signedToken string, tokenExp int64, customValidtor CustomTokenValidationFunc) string
+	GenerateSignedToken(expiry int64, signInSalt string, customValidtor CustomTokenValidationFunc) string
+	IsTokenValid(signedToken, signInSalt string, customValidtor CustomTokenValidationFunc) bool
+	RefreshToken(signedToken string, signInSalt string, tokenExp int64, customValidtor CustomTokenValidationFunc) string
 }
 
 func NewTokenFactory(tokenType interface{}) TokenFactory {
+	fmt.Printf("%T", tokenType)
 	switch tokenType.(type) {
-	case JwtClaims:
+	case *JwtClaims:
 		return tokenType.(*JwtClaims)
 	default:
 		return nil
 	}
 }
 
-func (j *JwtClaims) GenerateSignedToken(expiry int64, customValidtor CustomTokenValidationFunc) string {
+func (j *JwtClaims) GenerateSignedToken(expiry int64, signInSalt string, customValidtor CustomTokenValidationFunc) string {
 	if !j.IsCustomValidatorSuccess(customValidtor) {
 		return ""
 	}
 
-	var signInSalt string
-
 	j.JwtClaim[utils.JWT_CLAIMS_TOKEN_EXP_KEY] = utils.GetExpDuration(expiry)
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, &j.JwtClaim)
-
-	signInSaltval, ok := j.JwtClaim[utils.JWT_CLAIMS_SIGNIN_SALT_KEY]
-	if ok {
-		signInSalt = signInSaltval.(string)
-	}
 
 	signedToken, err := token.SignedString([]byte(signInSalt))
 	if err != nil {
@@ -52,14 +46,15 @@ func (j *JwtClaims) GenerateSignedToken(expiry int64, customValidtor CustomToken
 	return signedToken
 }
 
-func (j *JwtClaims) IsTokenValid(signedToken string, customValidtor CustomTokenValidationFunc) bool {
+func (j *JwtClaims) IsTokenValid(signedToken, signInSalt string, customValidtor CustomTokenValidationFunc) bool {
 
-	token, isValid := j.validateSignInMethod(signedToken)
+	token, isValid := j.validateSignInMethod(signedToken, signInSalt)
 	if !isValid || !token.Valid {
 		return false
 	}
+	exp := j.JwtClaim[utils.JWT_CLAIMS_TOKEN_EXP_KEY].(int64)
 
-	if !utils.ValidateExpiration(int64(j.JwtClaim[utils.JWT_CLAIMS_TOKEN_EXP_KEY].(float64))) {
+	if !utils.ValidateExpiration(int64(exp)) {
 		log.Errorln("token got expired")
 		return false
 	}
@@ -70,22 +65,22 @@ func (j *JwtClaims) IsTokenValid(signedToken string, customValidtor CustomTokenV
 	return true
 }
 
-func (j *JwtClaims) RefreshToken(signedToken string, tokenExp int64, customValidtor CustomTokenValidationFunc) string {
-	if !j.IsTokenValid(signedToken, customValidtor) {
+func (j *JwtClaims) RefreshToken(signedToken string, signInSalt string, tokenExp int64, customValidtor CustomTokenValidationFunc) string {
+	if !j.IsTokenValid(signedToken, signInSalt, customValidtor) {
 		return ""
 	}
 	tokenExp = time.Now().Add(time.Minute * time.Duration(tokenExp)).Unix()
 	j.JwtClaim[utils.JWT_CLAIMS_TOKEN_EXP_KEY] = tokenExp
 
-	return j.GenerateSignedToken(tokenExp, nil)
+	return j.GenerateSignedToken(tokenExp, signInSalt, nil)
 }
 
-func (j *JwtClaims) validateSignInMethod(signedToken string) (*jwt.Token, bool) {
+func (j *JwtClaims) validateSignInMethod(signedToken, signInSalt string) (*jwt.Token, bool) {
 	token, err := jwt.Parse(signedToken, func(token *jwt.Token) (interface{}, error) {
 		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
 			return nil, fmt.Errorf("token signing method is not valid: %v", token.Header["alg"])
 		}
-		return []byte(j.JwtClaim[utils.JWT_CLAIMS_SIGNIN_SALT_KEY].(string)), nil
+		return []byte(signInSalt), nil
 	})
 	if err != nil {
 		log.Errorln("error in validating signed token ", err)

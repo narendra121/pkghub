@@ -22,11 +22,6 @@ func (jcb *JwtClaimsBuilder) AddUserName(userName string) *JwtClaimsBuilder {
 	return jcb
 }
 
-func (jcb *JwtClaimsBuilder) AddSignInSalt(signInSalt string) *JwtClaimsBuilder {
-	jcb.jwtClaims.JwtClaim[utils.JWT_CLAIMS_SIGNIN_SALT_KEY] = signInSalt
-	return jcb
-}
-
 func (jcb *JwtClaimsBuilder) AddCustomClaim(key, val string) *JwtClaimsBuilder {
 	jcb.jwtClaims.JwtClaim[key] = val
 	return jcb

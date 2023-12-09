@@ -1,5 +1,11 @@
 package main
 
+import (
+	"fmt"
+
+	"github.com/narendra121/pkghub/auth"
+)
+
 func main() {
 
 	// jb := auth.NewJwtBuilder().AddEmail("hello").AddSignInSalt("fffffff").AddTokenExpiry(2).AddUserName("naren").Build()
@@ -68,7 +74,12 @@ func main() {
 	// r.Migrator().CreateTable(&UserJam{})
 	// _ = dbf.Connect()
 	// dbf.CreateTable(&UserJam{})
-
+	jb := auth.NewJwtBuilder().AddUserName("1234567").Build()
+	tk := auth.NewTokenFactory(&jb)
+	t := tk.GenerateSignedToken(2, "sss", nil)
+	fmt.Println(t)
+	v := tk.IsTokenValid(t, "sss", nil)
+	fmt.Println(v)
 }
 
 // type UserJam struct {
