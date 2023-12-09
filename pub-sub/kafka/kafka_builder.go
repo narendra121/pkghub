@@ -1,34 +1,34 @@
 package kafka
 
 type Kafka struct {
-	TopicInfo     TopicBuilder
-	ProducerInfo  ProducerBuilder
-	ConsumerGroup ConsumerGroupBuilder
+	TopicInfo     TopicCfgBuilder
+	ProducerInfo  ProducerCfgBuilder
+	ConsumerGroup ConsumerGroupCfgBuilder
 }
 
 type KafkaBuilder struct {
-	kafkaSetUp Kafka
+	kafkacfg Kafka
 }
 
-func NewKafkaBuilder() *KafkaBuilder {
-	return &KafkaBuilder{kafkaSetUp: Kafka{TopicInfo: TopicBuilder{}, ProducerInfo: ProducerBuilder{}, ConsumerGroup: ConsumerGroupBuilder{}}}
+func NewKafkaCfgBuilder() *KafkaBuilder {
+	return &KafkaBuilder{kafkacfg: Kafka{TopicInfo: TopicCfgBuilder{}, ProducerInfo: ProducerCfgBuilder{}, ConsumerGroup: ConsumerGroupCfgBuilder{}}}
 }
 
-func (kb *KafkaBuilder) SetTopicInfo(topicInfo TopicBuilder) *KafkaBuilder {
-	kb.kafkaSetUp.TopicInfo = topicInfo
+func (kb *KafkaBuilder) SetTopicInfo(topicInfo TopicCfgBuilder) *KafkaBuilder {
+	kb.kafkacfg.TopicInfo = topicInfo
 	return kb
 }
 
-func (kb *KafkaBuilder) SetProducerInfo(producerInfo ProducerBuilder) *KafkaBuilder {
-	kb.kafkaSetUp.ProducerInfo = producerInfo
+func (kb *KafkaBuilder) SetProducerInfo(producerInfo ProducerCfgBuilder) *KafkaBuilder {
+	kb.kafkacfg.ProducerInfo = producerInfo
 	return kb
 }
 
-func (kb *KafkaBuilder) SetConsumerGroupInfo(consumerGroupInfo ConsumerGroupBuilder) *KafkaBuilder {
-	kb.kafkaSetUp.ConsumerGroup = consumerGroupInfo
+func (kb *KafkaBuilder) SetConsumerGroupInfo(consumerGroupInfo ConsumerGroupCfgBuilder) *KafkaBuilder {
+	kb.kafkacfg.ConsumerGroup = consumerGroupInfo
 	return kb
 }
 
 func (kb *KafkaBuilder) Build() Kafka {
-	return kb.kafkaSetUp
+	return kb.kafkacfg
 }

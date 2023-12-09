@@ -19,37 +19,37 @@ import (
 	kb.SetProducerInfo(*pb).Build()
 kf := kafka.NewPubSubFactory(kb)
 
-producer, err := kf.CreateSyncProducer()
+Producer, err := kf.CreateSyncProducer()
 	log.Println(err)
-	kf.SendMessage(producer, "topic","helwlo")
+	kf.SendMessage(Producer, "topic","helwlo")
 
 
 */
 
-type Producer struct {
+type ProducerCfg struct {
 	Brokers []string
 	Config  *sarama.Config
 }
 
-type ProducerBuilder struct {
-	producerCfg Producer
+type ProducerCfgBuilder struct {
+	producerCfg ProducerCfg
 }
 
-func NewProducerBuilder() *ProducerBuilder {
-	return &ProducerBuilder{producerCfg: Producer{Config: sarama.NewConfig()}}
+func NewProducerCfgBuilder() *ProducerCfgBuilder {
+	return &ProducerCfgBuilder{producerCfg: ProducerCfg{Config: sarama.NewConfig()}}
 }
 
-func (pb *ProducerBuilder) SetAckType(ackType sarama.RequiredAcks) *ProducerBuilder {
+func (pb *ProducerCfgBuilder) SetAckType(ackType sarama.RequiredAcks) *ProducerCfgBuilder {
 	pb.producerCfg.Config.Producer.RequiredAcks = ackType
 	return pb
 }
 
-func (pb *ProducerBuilder) SetCompressionType(compressionType sarama.CompressionCodec) *ProducerBuilder {
+func (pb *ProducerCfgBuilder) SetCompressionType(compressionType sarama.CompressionCodec) *ProducerCfgBuilder {
 	pb.producerCfg.Config.Producer.Compression = compressionType
 	return pb
 }
 
-func (pb *ProducerBuilder) SetKafkaBackoffRetry(retryCount, maxRetryCount, backOffMultiplier int64, initBackoff, maxBackOff time.Duration) *ProducerBuilder {
+func (pb *ProducerCfgBuilder) SetKafkaBackoffRetry(retryCount, maxRetryCount, backOffMultiplier int64, initBackoff, maxBackOff time.Duration) *ProducerCfgBuilder {
 	pb.producerCfg.Config.Producer.Retry.BackoffFunc = func(retries, maxRetries int) time.Duration {
 		if retries == 0 {
 			return initBackoff
@@ -65,12 +65,12 @@ func (pb *ProducerBuilder) SetKafkaBackoffRetry(retryCount, maxRetryCount, backO
 	return pb
 }
 
-func (pb *ProducerBuilder) SetBrokers(brokers []string) *ProducerBuilder {
+func (pb *ProducerCfgBuilder) SetBrokers(brokers []string) *ProducerCfgBuilder {
 	pb.producerCfg.Brokers = append(pb.producerCfg.Brokers, brokers...)
 	return pb
 }
 
-func (pb *ProducerBuilder) Build() Producer {
+func (pb *ProducerCfgBuilder) Build() ProducerCfg {
 	pb.producerCfg.Config.Producer.Return.Successes = true
 	pb.producerCfg.Config.Producer.Return.Errors = true
 	return pb.producerCfg

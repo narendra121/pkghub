@@ -20,45 +20,45 @@ import "github.com/IBM/sarama"
     err := kf.CreateNewTopic()
 */
 
-type Topic struct {
+type TopicCfg struct {
 	TopicName   string
 	Brokers     []string
 	TopicConfig *sarama.TopicDetail
 }
 
-type TopicBuilder struct {
-	topic Topic
+type TopicCfgBuilder struct {
+	topicCfg TopicCfg
 }
 
-func NewTopicBuilder() *TopicBuilder {
-	return &TopicBuilder{topic: Topic{Brokers: make([]string, 0), TopicConfig: &sarama.TopicDetail{ConfigEntries: map[string]*string{}}}}
+func NewTopicBuilder() *TopicCfgBuilder {
+	return &TopicCfgBuilder{topicCfg: TopicCfg{Brokers: make([]string, 0), TopicConfig: &sarama.TopicDetail{ConfigEntries: map[string]*string{}}}}
 }
 
-func (t *TopicBuilder) SetPartitions(partitions int32) *TopicBuilder {
-	t.topic.TopicConfig.NumPartitions = partitions
+func (t *TopicCfgBuilder) SetPartitions(partitions int32) *TopicCfgBuilder {
+	t.topicCfg.TopicConfig.NumPartitions = partitions
 	return t
 }
 
-func (t *TopicBuilder) SetReplicationFactor(repllicationFactor int16) *TopicBuilder {
-	t.topic.TopicConfig.ReplicationFactor = repllicationFactor
+func (t *TopicCfgBuilder) SetReplicationFactor(repllicationFactor int16) *TopicCfgBuilder {
+	t.topicCfg.TopicConfig.ReplicationFactor = repllicationFactor
 	return t
 }
 
-func (t *TopicBuilder) SetTopicName(topicName string) *TopicBuilder {
-	t.topic.TopicName = topicName
+func (t *TopicCfgBuilder) SetTopicName(topicName string) *TopicCfgBuilder {
+	t.topicCfg.TopicName = topicName
 	return t
 }
 
-func (t *TopicBuilder) SetConfigEntries(key, val string) *TopicBuilder {
-	t.topic.TopicConfig.ConfigEntries[key] = &val
+func (t *TopicCfgBuilder) SetConfigEntries(key, val string) *TopicCfgBuilder {
+	t.topicCfg.TopicConfig.ConfigEntries[key] = &val
 	return t
 }
 
-func (t *TopicBuilder) SetBrokers(brokers []string) *TopicBuilder {
-	t.topic.Brokers = append(t.topic.Brokers, brokers...)
+func (t *TopicCfgBuilder) SetBrokers(brokers []string) *TopicCfgBuilder {
+	t.topicCfg.Brokers = append(t.topicCfg.Brokers, brokers...)
 	return t
 }
 
-func (t *TopicBuilder) Build() Topic {
-	return t.topic
+func (t *TopicCfgBuilder) Build() TopicCfg {
+	return t.topicCfg
 }

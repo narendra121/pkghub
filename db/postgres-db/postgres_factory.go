@@ -21,7 +21,7 @@ ppstb := postgresdb.NewPostgresDbBuilder().
 	dbf.CreateTable(&UserPro{}, &RamUsersMegaASD{})
 */
 
-func (p *PostgresDB) Connect() (interface{}, error) {
+func (p *PostgresCfg) Connect() (interface{}, error) {
 
 	db, err := gorm.Open(postgres.Open(p.CreateConnectionString()), &gorm.Config{})
 
@@ -40,6 +40,6 @@ func (p *PostgresDB) Connect() (interface{}, error) {
 	return db, nil
 }
 
-func (p *PostgresDB) CreateConnectionString() string {
+func (p *PostgresCfg) CreateConnectionString() string {
 	return fmt.Sprintf("host=%v user=%v password=%v dbname=%v port=%v sslmode=disable TimeZone=Asia/Shanghai", p.Host, p.User, p.Password, p.DbName, p.Port)
 }

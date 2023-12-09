@@ -31,46 +31,46 @@ kf.AddConsumerToConsumerGroup(cgroup, handler)
 
 	kf.AddConsumerToConsumerGroup(cgroup)
 */
-type ConsumerGroup struct {
+type ConsumerGroupCfg struct {
 	Topics  []string
 	Brokers []string
 	GroupId string
 	Config  *sarama.Config
 }
 
-type ConsumerGroupBuilder struct {
-	consumerCfg ConsumerGroup
+type ConsumerGroupCfgBuilder struct {
+	consumerCfg ConsumerGroupCfg
 }
 
-func NewConsumerGroupBuilder() *ConsumerGroupBuilder {
-	return &ConsumerGroupBuilder{consumerCfg: ConsumerGroup{Config: sarama.NewConfig(), Brokers: make([]string, 0), Topics: make([]string, 0)}}
+func NewConsumerGroupCfgBuilder() *ConsumerGroupCfgBuilder {
+	return &ConsumerGroupCfgBuilder{consumerCfg: ConsumerGroupCfg{Config: sarama.NewConfig(), Brokers: make([]string, 0), Topics: make([]string, 0)}}
 }
 
-func (cb *ConsumerGroupBuilder) SetConsumerGroupRebalanceStratagy(strategy sarama.BalanceStrategy) *ConsumerGroupBuilder {
+func (cb *ConsumerGroupCfgBuilder) SetConsumerGroupRebalanceStratagy(strategy sarama.BalanceStrategy) *ConsumerGroupCfgBuilder {
 	cb.consumerCfg.Config.Consumer.Group.Rebalance.Strategy = strategy
 	return cb
 }
 
-func (cb *ConsumerGroupBuilder) SetConsumerOffset(offsetVal int64) *ConsumerGroupBuilder {
+func (cb *ConsumerGroupCfgBuilder) SetConsumerOffset(offsetVal int64) *ConsumerGroupCfgBuilder {
 	cb.consumerCfg.Config.Consumer.Offsets.Initial = offsetVal
 	return cb
 }
 
-func (cb *ConsumerGroupBuilder) SetTopics(topics []string) *ConsumerGroupBuilder {
+func (cb *ConsumerGroupCfgBuilder) SetTopics(topics []string) *ConsumerGroupCfgBuilder {
 	cb.consumerCfg.Topics = append(cb.consumerCfg.Topics, topics...)
 	return cb
 }
 
-func (cb *ConsumerGroupBuilder) SetBrokers(brokers []string) *ConsumerGroupBuilder {
+func (cb *ConsumerGroupCfgBuilder) SetBrokers(brokers []string) *ConsumerGroupCfgBuilder {
 	cb.consumerCfg.Brokers = append(cb.consumerCfg.Brokers, brokers...)
 	return cb
 }
 
-func (cb *ConsumerGroupBuilder) SetGroupId(groupId string) *ConsumerGroupBuilder {
+func (cb *ConsumerGroupCfgBuilder) SetGroupId(groupId string) *ConsumerGroupCfgBuilder {
 	cb.consumerCfg.GroupId = groupId
 	return cb
 }
 
-func (cb *ConsumerGroupBuilder) Build() ConsumerGroup {
+func (cb *ConsumerGroupCfgBuilder) Build() ConsumerGroupCfg {
 	return cb.consumerCfg
 }

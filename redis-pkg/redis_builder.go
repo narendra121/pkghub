@@ -2,7 +2,7 @@ package redispkg
 
 import "github.com/redis/go-redis/v9"
 
-type Redis struct {
+type RedisCfg struct {
 	host     string
 	useName  string
 	password string
@@ -10,34 +10,34 @@ type Redis struct {
 	rClient  *redis.Client
 }
 
-type RedisBuilder struct {
-	redis Redis
+type RedisCfgBuilder struct {
+	redisCfg RedisCfg
 }
 
-func NewRedisBuilder() *RedisBuilder {
-	return &RedisBuilder{redis: Redis{}}
+func NewRedisCfgBuilder() *RedisCfgBuilder {
+	return &RedisCfgBuilder{redisCfg: RedisCfg{}}
 }
 
-func (rb *RedisBuilder) SetHost(host string) *RedisBuilder {
-	rb.redis.host = host
+func (rb *RedisCfgBuilder) SetHost(host string) *RedisCfgBuilder {
+	rb.redisCfg.host = host
 	return rb
 }
 
-func (rb *RedisBuilder) SetUserName(userName string) *RedisBuilder {
-	rb.redis.useName = userName
+func (rb *RedisCfgBuilder) SetUserName(userName string) *RedisCfgBuilder {
+	rb.redisCfg.useName = userName
 	return rb
 }
 
-func (rb *RedisBuilder) SetPassword(password string) *RedisBuilder {
-	rb.redis.password = password
+func (rb *RedisCfgBuilder) SetPassword(password string) *RedisCfgBuilder {
+	rb.redisCfg.password = password
 	return rb
 }
 
-func (rb *RedisBuilder) SetProtocol(version int) *RedisBuilder {
-	rb.redis.protocol = version
+func (rb *RedisCfgBuilder) SetProtocol(version int) *RedisCfgBuilder {
+	rb.redisCfg.protocol = version
 	return rb
 }
 
-func (rb *RedisBuilder) Build() Redis {
-	return rb.redis
+func (rb *RedisCfgBuilder) Build() RedisCfg {
+	return rb.redisCfg
 }

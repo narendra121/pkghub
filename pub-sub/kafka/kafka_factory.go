@@ -11,17 +11,17 @@ import (
 
 func (k *KafkaBuilder) CreateNewTopic() error {
 	config := sarama.NewConfig()
-	admin, err := sarama.NewClusterAdmin(k.kafkaSetUp.TopicInfo.topic.Brokers, config)
+	admin, err := sarama.NewClusterAdmin(k.kafkacfg.TopicInfo.topicCfg.Brokers, config)
 	if err != nil {
 		log.Errorln("error in CreateTopic ", err)
 		return err
 	}
 	defer admin.Close()
-	return admin.CreateTopic(k.kafkaSetUp.TopicInfo.topic.TopicName, k.kafkaSetUp.TopicInfo.topic.TopicConfig, false)
+	return admin.CreateTopic(k.kafkacfg.TopicInfo.topicCfg.TopicName, k.kafkacfg.TopicInfo.topicCfg.TopicConfig, false)
 }
 
 func (k *KafkaBuilder) CreateSyncProducer() (interface{}, error) {
-	producer, err := sarama.NewSyncProducer(k.kafkaSetUp.ProducerInfo.producerCfg.Brokers, k.kafkaSetUp.ProducerInfo.producerCfg.Config)
+	producer, err := sarama.NewSyncProducer(k.kafkacfg.ProducerInfo.producerCfg.Brokers, k.kafkacfg.ProducerInfo.producerCfg.Config)
 	if err != nil {
 		log.Errorln("error in producer ", err)
 		return nil, err
@@ -44,7 +44,7 @@ func (k *KafkaBuilder) SendMessage(producer interface{}, topic, message string) 
 }
 
 func (k *KafkaBuilder) CreateConsumerGroup() (interface{}, error) {
-	consumer, err := sarama.NewConsumerGroup(k.kafkaSetUp.ConsumerGroup.consumerCfg.Brokers, k.kafkaSetUp.ConsumerGroup.consumerCfg.GroupId, k.kafkaSetUp.ConsumerGroup.consumerCfg.Config)
+	consumer, err := sarama.NewConsumerGroup(k.kafkacfg.ConsumerGroup.consumerCfg.Brokers, k.kafkacfg.ConsumerGroup.consumerCfg.GroupId, k.kafkacfg.ConsumerGroup.consumerCfg.Config)
 	if err != nil {
 		return nil, err
 	}
@@ -61,7 +61,7 @@ func (k *KafkaBuilder) AddConsumerToConsumerGroup(consumer interface{}, customMs
 
 	go func() {
 		for {
-			if err := consumer.(sarama.ConsumerGroup).Consume(ctx, k.kafkaSetUp.ConsumerGroup.consumerCfg.Topics, customMsgHandler.(*MessageHandler)); err != nil {
+			if err := consumer.(sarama.ConsumerGroup).Consume(ctx, k.kafkacfg.ConsumerGroup.consumerCfg.Topics, customMsgHandler.(*MessageHandler)); err != nil {
 				log.Errorln("Error from consumer:", err)
 			}
 			if ctx.Err() != nil {
