@@ -1,4 +1,4 @@
-package postgresdb
+package postgrespkg
 
 import (
 	"fmt"
@@ -20,10 +20,17 @@ ppstb := postgresdb.NewPostgresDbBuilder().
 	_ = dbf.Connect()
 	dbf.CreateTable(&UserPro{}, &RamUsersMegaASD{})
 */
+type PostgresFactory interface {
+	Connect() (*gorm.DB, error)
+}
 
-func (p *PostgresCfg) Connect() (interface{}, error) {
+func NewPostgresFactory(p *PostgresCfg) PostgresFactory {
+	return p
+}
 
-	db, err := gorm.Open(postgres.Open(p.CreateConnectionString()), &gorm.Config{})
+func (p *PostgresCfg) Connect() (*gorm.DB, error) {
+
+	db, err := gorm.Open(postgres.Open(p.createConnectionString()), &gorm.Config{})
 
 	if err != nil {
 		log.Errorln("error in connecting to postgres db :", err)
@@ -36,10 +43,10 @@ func (p *PostgresCfg) Connect() (interface{}, error) {
 	}
 	sqlDb.SetMaxIdleConns(5)
 	sqlDb.SetMaxOpenConns(20)
-	log.Infoln("Postgres is connected", p.CreateConnectionString())
+	log.Infoln("Postgres is connected", p.createConnectionString())
 	return db, nil
 }
 
-func (p *PostgresCfg) CreateConnectionString() string {
+func (p *PostgresCfg) createConnectionString() string {
 	return fmt.Sprintf("host=%v user=%v password=%v dbname=%v port=%v sslmode=disable TimeZone=Asia/Shanghai", p.Host, p.User, p.Password, p.DbName, p.Port)
 }

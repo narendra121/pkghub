@@ -1,4 +1,4 @@
-package auth
+package jwtpkg
 
 import (
 	"fmt"
@@ -17,8 +17,12 @@ type TokenFactory interface {
 	RefreshToken(signedToken string, signInSalt string, tokenExp int64, customValidtor CustomTokenValidationFunc) string
 }
 
+func NewTokenFactory() TokenFactory {
+	return &JwtClaims{JwtClaim: make(jwt.MapClaims)}
+}
+
 func (j *JwtClaims) GenerateSignedToken(expiry int64, signInSalt string, customValidtor CustomTokenValidationFunc) string {
-	if !j.IsCustomValidatorSuccess(customValidtor) {
+	if !j.isCustomValidatorSuccess(customValidtor) {
 		return ""
 	}
 
@@ -49,7 +53,7 @@ func (j *JwtClaims) IsTokenValid(signedToken, signInSalt string, customValidtor 
 		log.Errorln("token got expired")
 		return false
 	}
-	if !j.IsCustomValidatorSuccess(customValidtor) {
+	if !j.isCustomValidatorSuccess(customValidtor) {
 		return false
 	}
 
@@ -81,7 +85,7 @@ func (j *JwtClaims) validateSignInMethod(signedToken, signInSalt string) (*jwt.T
 	return token, true
 }
 
-func (j *JwtClaims) IsCustomValidatorSuccess(validator CustomTokenValidationFunc) bool {
+func (j *JwtClaims) isCustomValidatorSuccess(validator CustomTokenValidationFunc) bool {
 	if validator != nil {
 		userName, ok := j.JwtClaim[utils.JWT_CLAIMS_USERNAME_KEY]
 		if !ok {

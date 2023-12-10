@@ -1,17 +1,17 @@
-package kafka
+package kafkapkg
 
-type Kafka struct {
+type KafkaCfg struct {
 	TopicInfo     TopicCfgBuilder
 	ProducerInfo  ProducerCfgBuilder
 	ConsumerGroup ConsumerGroupCfgBuilder
 }
 
 type KafkaBuilder struct {
-	kafkacfg Kafka
+	kafkacfg KafkaCfg
 }
 
 func NewKafkaCfgBuilder() *KafkaBuilder {
-	return &KafkaBuilder{kafkacfg: Kafka{TopicInfo: TopicCfgBuilder{}, ProducerInfo: ProducerCfgBuilder{}, ConsumerGroup: ConsumerGroupCfgBuilder{}}}
+	return &KafkaBuilder{kafkacfg: KafkaCfg{TopicInfo: TopicCfgBuilder{}, ProducerInfo: ProducerCfgBuilder{}, ConsumerGroup: ConsumerGroupCfgBuilder{}}}
 }
 
 func (kb *KafkaBuilder) SetTopicInfo(topicInfo TopicCfgBuilder) *KafkaBuilder {
@@ -29,6 +29,6 @@ func (kb *KafkaBuilder) SetConsumerGroupInfo(consumerGroupInfo ConsumerGroupCfgB
 	return kb
 }
 
-func (kb *KafkaBuilder) Build() Kafka {
+func (kb *KafkaBuilder) Build() KafkaCfg {
 	return kb.kafkacfg
 }

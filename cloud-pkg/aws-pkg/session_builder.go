@@ -1,9 +1,12 @@
-package aws
+package awspkg
+
+import "github.com/aws/aws-sdk-go/aws/session"
 
 type AwsCfg struct {
 	ClientID     string
 	ClientSecret string
 	Region       string
+	AwsSession   *session.Session
 }
 
 type AwsCfgBuilder struct {

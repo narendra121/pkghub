@@ -6,7 +6,7 @@ import (
 	"github.com/redis/go-redis/v9"
 )
 
-type RedisRepo interface {
+type RedisFactory interface {
 	SetValue(ctx context.Context, key string, field string, value interface{}) error
 	GetValue(ctx context.Context, key, field string) (string, error)
 	GetAll(ctx context.Context, key string) (map[string]string, error)
@@ -14,7 +14,7 @@ type RedisRepo interface {
 	FlushRedis(ctx context.Context) error
 }
 
-func NewClent(cfg *RedisCfg) RedisRepo {
+func NewRedisFactory(cfg *RedisCfg) RedisFactory {
 	cfg.rClient = redis.NewClient(&redis.Options{
 		Addr:     cfg.host,
 		Username: cfg.useName,

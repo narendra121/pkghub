@@ -1,4 +1,4 @@
-package postgresdb
+package postgrespkg
 
 type PostgresCfg struct {
 	Host     string

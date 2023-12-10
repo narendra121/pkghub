@@ -1,4 +1,4 @@
-package kafka
+package kafkapkg
 
 import "github.com/IBM/sarama"
 

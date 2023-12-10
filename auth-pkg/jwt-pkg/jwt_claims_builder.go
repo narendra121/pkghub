@@ -1,4 +1,4 @@
-package auth
+package jwtpkg
 
 import (
 	"github.com/golang-jwt/jwt"
